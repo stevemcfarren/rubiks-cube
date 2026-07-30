@@ -123,7 +123,6 @@ public class RubiksCubeSolver {
 
 	protected boolean solveTopEdgePieces() {
 		// First solve edge pieces.
-		System.out.println("Solving top edge pieces...");
 		int piecesSolved = 0;
 
 		for (int i = 0; i < 4; i++) {
@@ -134,8 +133,6 @@ public class RubiksCubeSolver {
 			}
 		}
 
-		System.out.println("    Top edge pieces solved: " + piecesSolved);
-
 		if (piecesSolved < 4)
 			return false;
 
@@ -144,7 +141,6 @@ public class RubiksCubeSolver {
 
 	protected boolean solveTopCornerPieces() {
 		// Solve top right corner pieces.
-		System.out.println("Solving top corner pieces...");
 		int piecesSolved = 0;
 
 		for (int i = 0; i < 4; i++) {
@@ -155,8 +151,6 @@ public class RubiksCubeSolver {
 			}
 		}
 
-		System.out.println("    Top corner pieces solved: " + piecesSolved);
-
 		if (piecesSolved < 4)
 			return false;
 
@@ -165,7 +159,6 @@ public class RubiksCubeSolver {
 
 	protected boolean solveMiddleEdgePieces() {
 		// Solve middle edge pieces.
-		System.out.println("Solving middle edge pieces...");
 		int piecesSolved = 0;
 
 		for (int i = 0; i < 4; i++) {
@@ -176,8 +169,6 @@ public class RubiksCubeSolver {
 			}
 		}
 
-		System.out.println("    Middle edge pieces solved: " + piecesSolved);
-
 		if (piecesSolved < 4)
 			return false;
 
@@ -186,7 +177,6 @@ public class RubiksCubeSolver {
 
 	protected boolean solveBottomCorners() {
 		// Solve bottom corner pieces.
-		System.out.println("Solving bottom corner pieces...");
 		beginStep(StepType.BOTTOM_CORNER_POSITION);
 
 		Point3D frontLeft = new Point3D(-1, -1, 1);
@@ -224,7 +214,6 @@ public class RubiksCubeSolver {
 			}
 		}
 
-		System.out.println("    Bottom corner pieces are in place");
 		beginStep(StepType.BOTTOM_CORNER_ORIENTATION);
 
 		// If any bottom corners are not solved, find a rule to rotate them in place.
@@ -248,14 +237,11 @@ public class RubiksCubeSolver {
 			}
 		}
 
-		System.out.println("    Bottom corner pieces are in solved");
-
 		return true;
 	}
 
 	protected boolean solveBottomEdges() {
 		// Solve bottom corner pieces.
-		System.out.println("Solving bottom corner pieces...");
 		beginStep(StepType.BOTTOM_EDGES);
 
 		Point3D left = new Point3D(-1, -1, 0);
@@ -283,8 +269,6 @@ public class RubiksCubeSolver {
 				return false;
 			}
 		}
-
-		System.out.println("    Bottom edge pieces are solved");
 
 
 		return true;
