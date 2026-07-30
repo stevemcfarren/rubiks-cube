@@ -1,0 +1,8 @@
+{
+  "ruleSetFilename": "RubiksCube_RuleFinder_RuleSet_12.json",
+  "minLength": 1,
+  "maxLength": 12,
+  "initialSequence": 4,
+  "batchSize": 5,
+  "nextSeqId": 0
+}

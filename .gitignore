@@ -1,0 +1,9 @@
+bin/
+target/
+output/
+libs/
+.classpath
+.metadata/
+.project
+.settings/
+/rubikscube.jar
