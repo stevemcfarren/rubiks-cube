@@ -12,6 +12,9 @@
 		<name>Steve McFarren</name>
 		<url>https://github.com/stevemcfarren</url>
 	</organization>
+	<scm>
+    	<developerConnection>scm:git:https://github.com/stevemcfarren/rubiks-cube.git</developerConnection>
+	</scm>
 	<properties>
 		<java.version>25</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +45,11 @@
 					<source>25</source>
 					<target>25</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>3.3.1</version>
 			</plugin>
 		</plugins>
 	</build>
