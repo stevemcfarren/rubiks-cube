@@ -25,7 +25,7 @@ public class RubiksCube {
 	}
 
 	/**
-	 * Constructs a new RubiksCube by copying another RubiksCube.
+	 * Constructs a new RubiksCube in the same state as the given cube.
 	 *
 	 * @param sourceCube the cube to copy
 	 */
@@ -42,12 +42,99 @@ public class RubiksCube {
 		}
 	}
 
+	/**
+	 * Constructs a new RubiksCube in the state identified by stateIdentifier.
+	 *
+	 * @param stateIdentifier the initial state of the new cube.
+	 * @throws IllegalArgumentException if the given state invalid.
+	 */
+	public RubiksCube(String stateIdentifier) {
+		String[][][] faces = new String[6][3][3];
+
+		String[] facesIds = stateIdentifier.split("-");
+		for (int faceIndex = 0; faceIndex < 6; faceIndex++) {
+			int faceID = Integer.parseInt(facesIds[faceIndex], 36);
+
+			for (int row = 0; row <= 2; row++) {
+				for (int col = 0; col <= 2; col++) {
+					faces[faceIndex][row][col] = Color.getById(faceID % 6).toString();
+					faceID = (int) (faceID / 6);
+				}
+			}
+		}
+
+		this(new DisplayData(faces[0], faces[1], faces[2], faces[3], faces[4], faces[5]));
+	}
+
+	/**
+	 * Constructs a new RubiksCube matching the given display data.
+	 *
+	 * @param data the display data specifying the state of the new cube.
+	 * @throws IllegalArgumentException if the given state invalid.
+	 */
+	public RubiksCube(DisplayData data) {
+		Piece[] pieces = {
+				new Piece(Color.valueOf(data.left[2][0]), Color.valueOf(data.bottom[2][0]),
+						Color.valueOf(data.back[2][2])), // (-1,-1,-1)
+				new Piece(Color.valueOf(data.left[2][1]), Color.valueOf(data.bottom[1][0]), Color.NONE), // (-1,-1,0)
+				new Piece(Color.valueOf(data.left[2][2]), Color.valueOf(data.bottom[0][0]),
+						Color.valueOf(data.front[2][0])), // (-1,-1,1)
+
+				new Piece(Color.valueOf(data.left[1][0]), Color.NONE, Color.valueOf(data.back[1][2])), // (-1,0,-1)
+				new Piece(Color.valueOf(data.left[1][1]), Color.NONE, Color.NONE), // (-1,0,0)
+				new Piece(Color.valueOf(data.left[1][2]), Color.NONE, Color.valueOf(data.front[1][0])), // (-1,0,1)
+
+				new Piece(Color.valueOf(data.left[0][0]), Color.valueOf(data.top[0][0]),
+						Color.valueOf(data.back[0][2])), // (-1,1,-1)
+				new Piece(Color.valueOf(data.left[0][1]), Color.valueOf(data.top[1][0]), Color.NONE), // (-1,1,0)
+				new Piece(Color.valueOf(data.left[0][2]), Color.valueOf(data.top[2][0]),
+						Color.valueOf(data.front[0][0])), // (-1,1,1)
+
+				new Piece(Color.NONE, Color.valueOf(data.bottom[2][1]), Color.valueOf(data.back[2][1])), // (0,-1,-1)
+				new Piece(Color.NONE, Color.valueOf(data.bottom[1][1]), Color.NONE), // (0,-1,0)
+				new Piece(Color.NONE, Color.valueOf(data.bottom[0][1]), Color.valueOf(data.front[2][1])), // (0,-1,1)
+
+				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.back[1][1])), // (0,0,-1)
+				// No piece at (0, 0, 0)
+				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.front[1][1])), // (0,0,1)
+
+				new Piece(Color.NONE, Color.valueOf(data.top[0][1]), Color.valueOf(data.back[0][1])), // (0,1,-1)
+				new Piece(Color.NONE, Color.valueOf(data.top[1][1]), Color.NONE), // (0,1,0)
+				new Piece(Color.NONE, Color.valueOf(data.top[2][1]), Color.valueOf(data.front[0][1])), // (0,1,1)
+
+				new Piece(Color.valueOf(data.right[2][2]), Color.valueOf(data.bottom[2][2]),
+						Color.valueOf(data.back[2][0])), // (1,-1,-1)
+				new Piece(Color.valueOf(data.right[2][1]), Color.valueOf(data.bottom[1][2]), Color.NONE), // (1,-1,0)
+				new Piece(Color.valueOf(data.right[2][0]), Color.valueOf(data.bottom[0][2]),
+						Color.valueOf(data.front[2][2])), // (1,-1,1)
+
+				new Piece(Color.valueOf(data.right[1][2]), Color.NONE, Color.valueOf(data.back[1][0])), // (1,0,-1)
+				new Piece(Color.valueOf(data.right[1][1]), Color.NONE, Color.NONE), // (1,0,0)
+				new Piece(Color.valueOf(data.right[1][0]), Color.NONE, Color.valueOf(data.front[1][2])), // (1,0,1)
+
+				new Piece(Color.valueOf(data.right[0][2]), Color.valueOf(data.top[0][2]),
+						Color.valueOf(data.back[0][0])), // (1,1,-1)
+				new Piece(Color.valueOf(data.right[0][1]), Color.valueOf(data.top[1][2]), Color.NONE), // (1,1,0)
+				new Piece(Color.valueOf(data.right[0][0]), Color.valueOf(data.top[2][2]),
+						Color.valueOf(data.front[0][2])), // (1,1,1)
+		};
+
+		this(pieces);
+	}
+
+	/**
+	 * Constructs a new RubiksCube with the given pieces.
+	 *
+	 * @param pieces used to construct the new cube.
+	 * @throws IllegalArgumentException if the given pieces are invalid.
+	 */
 	protected RubiksCube(Piece[] pieces) {
 		if (pieces.length != 26) {
 			throw new IllegalArgumentException("Cube must contain 26 pieces. Given pieces = " + pieces.length);
 		}
 
 		int next = 0;
+		boolean[] duplicateCheck = new boolean[56];
 
 		for (int x = 0; x <= 2; x++) {
 			for (int y = 0; y <= 2; y++) {
@@ -61,6 +148,10 @@ public class RubiksCube {
 					if (p == null) {
 						throw new IllegalArgumentException("Given pieces must not be null.");
 					}
+
+					if (duplicateCheck[p.getID() - 1])
+						throw new IllegalArgumentException("Duplicate piece found with ID = " + p.getID());
+					duplicateCheck[p.getID() - 1] = true;
 
 					if ((x - 1 == 0 && p.getXColor() != Color.NONE) || (x - 1 != 0 && p.getXColor() == Color.NONE)) {
 						throw new IllegalArgumentException(String.format("Illegal 'X' color %s at (%d, %d, %d)",
@@ -458,7 +549,6 @@ public class RubiksCube {
 		return null;
 	}
 
-
 	/**
 	 * Returns a record representing all faces and their sticker colors. Each face
 	 * is represented as a 3x3 array of color names.
@@ -474,68 +564,61 @@ public class RubiksCube {
 		String[][] front = new String[3][3];
 		String[][] back = new String[3][3];
 
-		// Top
 		for (int row = 0; row <= 2; row++) {
 			for (int col = 0; col <= 2; col++) {
 
 				int revRow = ((row - 1) * -1) + 1;
 				int revCol = ((col - 1) * -1) + 1;
 
-				left[revRow][col] = pieceMatrix[0][row][col].getXColor().toString();
-				right[revRow][revCol] = pieceMatrix[2][row][col].getXColor().toString();
+				left[row][col] = pieceMatrix[0][revRow][col].getXColor().toString();
+				right[row][col] = pieceMatrix[2][revRow][revCol].getXColor().toString();
 
 				top[row][col] = pieceMatrix[col][2][row].getYColor().toString();
-				bottom[revRow][col] = pieceMatrix[col][0][row].getYColor().toString();
+				bottom[row][col] = pieceMatrix[col][0][revRow].getYColor().toString();
 
-				back[revRow][revCol] = pieceMatrix[col][row][0].getZColor().toString();
-				front[revRow][col] = pieceMatrix[col][row][2].getZColor().toString();
+				back[row][col] = pieceMatrix[revCol][revRow][0].getZColor().toString();
+				front[row][col] = pieceMatrix[col][revRow][2].getZColor().toString();
 			}
 		}
 
 		return new DisplayData(top, bottom, left, right, front, back);
 	}
 
-	
-	public RubiksCube(DisplayData data) {
-		Piece[] pieces = { 
-				new Piece(Color.valueOf(data.left[2][0]), Color.valueOf(data.bottom[2][0]), Color.valueOf(data.back[2][2])), // (-1,-1,-1)
-				new Piece(Color.valueOf(data.left[2][1]), Color.valueOf(data.bottom[1][0]), Color.NONE), // (-1,-1,0)
-				new Piece(Color.valueOf(data.left[2][2]), Color.valueOf(data.bottom[0][0]), Color.valueOf(data.front[2][0])), // (-1,-1,1)
+	/**
+	 * Generates and returns a unique identifier for the cube's current state.
+	 *
+	 * @return a String identifying the cube's current state.
+	 */
+	public String getStateIdentifier() {
+		int top = 0;
+		int bottom = 0;
+		int left = 0;
+		int right = 0;
+		int front = 0;
+		int back = 0;
 
-				new Piece(Color.valueOf(data.left[1][0]), Color.NONE, Color.valueOf(data.back[1][2])), // (-1,0,-1)
-				new Piece(Color.valueOf(data.left[1][1]), Color.NONE, Color.NONE), // (-1,0,0)
-				new Piece(Color.valueOf(data.left[1][2]), Color.NONE, Color.valueOf(data.front[1][0])), // (-1,0,1)
-				
-				new Piece(Color.valueOf(data.left[0][0]), Color.valueOf(data.top[0][0]), Color.valueOf(data.back[0][2])), // (-1,1,-1)
-				new Piece(Color.valueOf(data.left[0][1]), Color.valueOf(data.top[1][0]), Color.NONE), // (-1,1,0)
-				new Piece(Color.valueOf(data.left[0][2]), Color.valueOf(data.top[2][0]), Color.valueOf(data.front[0][0])), // (-1,1,1)
+		// Construct a base six number with the right-most digit representing the color
+		// of the top-left sticker on each face.
+		for (int row = 0; row <= 2; row++) {
+			for (int col = 0; col <= 2; col++) {
 
-				new Piece(Color.NONE, Color.valueOf(data.bottom[2][1]), Color.valueOf(data.back[2][1])), // (0,-1,-1)
-				new Piece(Color.NONE, Color.valueOf(data.bottom[1][1]), Color.NONE), // (0,-1,0)
-				new Piece(Color.NONE, Color.valueOf(data.bottom[0][1]), Color.valueOf(data.front[2][1])), // (0,-1,1)
+				int revRow = ((row - 1) * -1) + 1;
+				int revCol = ((col - 1) * -1) + 1;
 
-				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.back[1][1])), // (0,0,-1)
-				// No piece at (0, 0, 0)
-				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.front[1][1])), // (0,0,1)
+				int position = Math.powExact(6, (row * 3 + col));
 
-				new Piece(Color.NONE, Color.valueOf(data.top[0][1]), Color.valueOf(data.back[0][1])), // (0,1,-1)
-				new Piece(Color.NONE, Color.valueOf(data.top[1][1]), Color.NONE), // (0,1,0)
-				new Piece(Color.NONE, Color.valueOf(data.top[2][1]), Color.valueOf(data.front[0][1])), // (0,1,1)
+				left += pieceMatrix[0][revRow][col].getXColor().id * position;
+				right += pieceMatrix[2][revRow][revCol].getXColor().id * position;
 
-				new Piece(Color.valueOf(data.right[2][2]), Color.valueOf(data.bottom[2][2]), Color.valueOf(data.back[2][0])), // (1,-1,-1)
-				new Piece(Color.valueOf(data.right[2][1]), Color.valueOf(data.bottom[1][2]), Color.NONE), // (1,-1,0)
-				new Piece(Color.valueOf(data.right[2][0]), Color.valueOf(data.bottom[0][2]), Color.valueOf(data.front[2][2])), // (1,-1,1)
+				top += pieceMatrix[col][2][row].getYColor().id * position;
+				bottom += pieceMatrix[col][0][revRow].getYColor().id * position;
 
-				new Piece(Color.valueOf(data.right[1][2]), Color.NONE, Color.valueOf(data.back[1][0])), // (1,0,-1)
-				new Piece(Color.valueOf(data.right[1][1]), Color.NONE, Color.NONE), // (1,0,0)
-				new Piece(Color.valueOf(data.right[1][0]), Color.NONE, Color.valueOf(data.front[1][2])), // (1,0,1)
+				back += pieceMatrix[revCol][revRow][0].getZColor().id * position;
+				front += pieceMatrix[col][revRow][2].getZColor().id * position;
+			}
+		}
 
-				new Piece(Color.valueOf(data.right[0][2]), Color.valueOf(data.top[0][2]), Color.valueOf(data.back[0][0])), // (1,1,-1)
-				new Piece(Color.valueOf(data.right[0][1]), Color.valueOf(data.top[1][2]), Color.NONE), // (1,1,0)
-				new Piece(Color.valueOf(data.right[0][0]), Color.valueOf(data.top[2][2]), Color.valueOf(data.front[0][2])), // (1,1,1)
-			};
-		
-		this(pieces);
+		return Integer.toString(top, 36) + '-' + Integer.toString(bottom, 36) + '-' + Integer.toString(left, 36) + '-'
+				+ Integer.toString(right, 36) + '-' + Integer.toString(front, 36) + '-' + Integer.toString(back, 36);
 	}
-
 }
