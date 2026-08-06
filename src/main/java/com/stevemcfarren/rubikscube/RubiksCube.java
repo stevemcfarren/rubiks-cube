@@ -46,12 +46,16 @@ public class RubiksCube {
 	 * Constructs a new RubiksCube in the state identified by stateIdentifier.
 	 *
 	 * @param stateIdentifier the initial state of the new cube.
-	 * @throws IllegalArgumentException if the given state invalid.
+	 * @throws InvalidRubiksCubeState if the given state is invalid.
 	 */
 	public RubiksCube(String stateIdentifier) {
 		String[][][] faces = new String[6][3][3];
 
 		String[] facesIds = stateIdentifier.split("-");
+		if (facesIds.length != 6) {
+			throw new InvalidRubiksCubeState("Invalid state identifier: " + stateIdentifier);
+		}
+
 		for (int faceIndex = 0; faceIndex < 6; faceIndex++) {
 			int faceID = Integer.parseInt(facesIds[faceIndex], 36);
 
@@ -70,54 +74,59 @@ public class RubiksCube {
 	 * Constructs a new RubiksCube matching the given display data.
 	 *
 	 * @param data the display data specifying the state of the new cube.
-	 * @throws IllegalArgumentException if the given state invalid.
+	 * @throws InvalidRubiksCubeState if the given state is invalid.
 	 */
 	public RubiksCube(DisplayData data) {
-		Piece[] pieces = {
-				new Piece(Color.valueOf(data.left[2][0]), Color.valueOf(data.bottom[2][0]),
-						Color.valueOf(data.back[2][2])), // (-1,-1,-1)
-				new Piece(Color.valueOf(data.left[2][1]), Color.valueOf(data.bottom[1][0]), Color.NONE), // (-1,-1,0)
-				new Piece(Color.valueOf(data.left[2][2]), Color.valueOf(data.bottom[0][0]),
-						Color.valueOf(data.front[2][0])), // (-1,-1,1)
+		Piece[] pieces = new Piece[26];
+		try {
+			pieces[0] = new Piece(Color.valueOf(data.left[2][0]), Color.valueOf(data.bottom[2][0]),
+					Color.valueOf(data.back[2][2])); // (-1,-1,-1)
 
-				new Piece(Color.valueOf(data.left[1][0]), Color.NONE, Color.valueOf(data.back[1][2])), // (-1,0,-1)
-				new Piece(Color.valueOf(data.left[1][1]), Color.NONE, Color.NONE), // (-1,0,0)
-				new Piece(Color.valueOf(data.left[1][2]), Color.NONE, Color.valueOf(data.front[1][0])), // (-1,0,1)
+			pieces[1] = new Piece(Color.valueOf(data.left[2][1]), Color.valueOf(data.bottom[1][0]), Color.NONE); // (-1,-1,0)
+			pieces[2] = new Piece(Color.valueOf(data.left[2][2]), Color.valueOf(data.bottom[0][0]),
+					Color.valueOf(data.front[2][0])); // (-1,-1,1)
 
-				new Piece(Color.valueOf(data.left[0][0]), Color.valueOf(data.top[0][0]),
-						Color.valueOf(data.back[0][2])), // (-1,1,-1)
-				new Piece(Color.valueOf(data.left[0][1]), Color.valueOf(data.top[1][0]), Color.NONE), // (-1,1,0)
-				new Piece(Color.valueOf(data.left[0][2]), Color.valueOf(data.top[2][0]),
-						Color.valueOf(data.front[0][0])), // (-1,1,1)
+			pieces[3] = new Piece(Color.valueOf(data.left[1][0]), Color.NONE, Color.valueOf(data.back[1][2])); // (-1,0,-1)
+			pieces[4] = new Piece(Color.valueOf(data.left[1][1]), Color.NONE, Color.NONE); // (-1,0,0)
+			pieces[5] = new Piece(Color.valueOf(data.left[1][2]), Color.NONE, Color.valueOf(data.front[1][0])); // (-1,0,1)
 
-				new Piece(Color.NONE, Color.valueOf(data.bottom[2][1]), Color.valueOf(data.back[2][1])), // (0,-1,-1)
-				new Piece(Color.NONE, Color.valueOf(data.bottom[1][1]), Color.NONE), // (0,-1,0)
-				new Piece(Color.NONE, Color.valueOf(data.bottom[0][1]), Color.valueOf(data.front[2][1])), // (0,-1,1)
+			pieces[6] = new Piece(Color.valueOf(data.left[0][0]), Color.valueOf(data.top[0][0]),
+					Color.valueOf(data.back[0][2])); // (-1,1,-1)
+			pieces[7] = new Piece(Color.valueOf(data.left[0][1]), Color.valueOf(data.top[1][0]), Color.NONE); // (-1,1,0)
+			pieces[8] = new Piece(Color.valueOf(data.left[0][2]), Color.valueOf(data.top[2][0]),
+					Color.valueOf(data.front[0][0])); // (-1,1,1)
 
-				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.back[1][1])), // (0,0,-1)
-				// No piece at (0, 0, 0)
-				new Piece(Color.NONE, Color.NONE, Color.valueOf(data.front[1][1])), // (0,0,1)
+			pieces[9] = new Piece(Color.NONE, Color.valueOf(data.bottom[2][1]), Color.valueOf(data.back[2][1])); // (0,-1,-1)
+			pieces[10] = new Piece(Color.NONE, Color.valueOf(data.bottom[1][1]), Color.NONE); // (0,-1,0)
+			pieces[11] = new Piece(Color.NONE, Color.valueOf(data.bottom[0][1]), Color.valueOf(data.front[2][1])); // (0,-1,1)
 
-				new Piece(Color.NONE, Color.valueOf(data.top[0][1]), Color.valueOf(data.back[0][1])), // (0,1,-1)
-				new Piece(Color.NONE, Color.valueOf(data.top[1][1]), Color.NONE), // (0,1,0)
-				new Piece(Color.NONE, Color.valueOf(data.top[2][1]), Color.valueOf(data.front[0][1])), // (0,1,1)
+			pieces[12] = new Piece(Color.NONE, Color.NONE, Color.valueOf(data.back[1][1])); // (0,0,-1)
+			// No piece at (0, 0, 0)
+			pieces[13] = new Piece(Color.NONE, Color.NONE, Color.valueOf(data.front[1][1])); // (0,0,1)
 
-				new Piece(Color.valueOf(data.right[2][2]), Color.valueOf(data.bottom[2][2]),
-						Color.valueOf(data.back[2][0])), // (1,-1,-1)
-				new Piece(Color.valueOf(data.right[2][1]), Color.valueOf(data.bottom[1][2]), Color.NONE), // (1,-1,0)
-				new Piece(Color.valueOf(data.right[2][0]), Color.valueOf(data.bottom[0][2]),
-						Color.valueOf(data.front[2][2])), // (1,-1,1)
+			pieces[14] = new Piece(Color.NONE, Color.valueOf(data.top[0][1]), Color.valueOf(data.back[0][1])); // (0,1,-1)
+			pieces[15] = new Piece(Color.NONE, Color.valueOf(data.top[1][1]), Color.NONE); // (0,1,0)
+			pieces[16] = new Piece(Color.NONE, Color.valueOf(data.top[2][1]), Color.valueOf(data.front[0][1])); // (0,1,1)
 
-				new Piece(Color.valueOf(data.right[1][2]), Color.NONE, Color.valueOf(data.back[1][0])), // (1,0,-1)
-				new Piece(Color.valueOf(data.right[1][1]), Color.NONE, Color.NONE), // (1,0,0)
-				new Piece(Color.valueOf(data.right[1][0]), Color.NONE, Color.valueOf(data.front[1][2])), // (1,0,1)
+			pieces[17] = new Piece(Color.valueOf(data.right[2][2]), Color.valueOf(data.bottom[2][2]),
+					Color.valueOf(data.back[2][0])); // (1,-1,-1)
+			pieces[18] = new Piece(Color.valueOf(data.right[2][1]), Color.valueOf(data.bottom[1][2]), Color.NONE); // (1,-1,0)
+			pieces[19] = new Piece(Color.valueOf(data.right[2][0]), Color.valueOf(data.bottom[0][2]),
+					Color.valueOf(data.front[2][2])); // (1,-1,1)
 
-				new Piece(Color.valueOf(data.right[0][2]), Color.valueOf(data.top[0][2]),
-						Color.valueOf(data.back[0][0])), // (1,1,-1)
-				new Piece(Color.valueOf(data.right[0][1]), Color.valueOf(data.top[1][2]), Color.NONE), // (1,1,0)
-				new Piece(Color.valueOf(data.right[0][0]), Color.valueOf(data.top[2][2]),
-						Color.valueOf(data.front[0][2])), // (1,1,1)
-		};
+			pieces[20] = new Piece(Color.valueOf(data.right[1][2]), Color.NONE, Color.valueOf(data.back[1][0])); // (1,0,-1)
+			pieces[21] = new Piece(Color.valueOf(data.right[1][1]), Color.NONE, Color.NONE); // (1,0,0)
+			pieces[22] = new Piece(Color.valueOf(data.right[1][0]), Color.NONE, Color.valueOf(data.front[1][2])); // (1,0,1)
+
+			pieces[23] = new Piece(Color.valueOf(data.right[0][2]), Color.valueOf(data.top[0][2]),
+					Color.valueOf(data.back[0][0])); // (1,1,-1)
+			pieces[24] = new Piece(Color.valueOf(data.right[0][1]), Color.valueOf(data.top[1][2]), Color.NONE); // (1,1,0)
+			pieces[25] = new Piece(Color.valueOf(data.right[0][0]), Color.valueOf(data.top[2][2]),
+					Color.valueOf(data.front[0][2])); // (1,1,1)
+
+		} catch (IllegalArgumentException e) {
+			throw new InvalidRubiksCubeState(e);
+		}
 
 		this(pieces);
 	}
@@ -126,11 +135,11 @@ public class RubiksCube {
 	 * Constructs a new RubiksCube with the given pieces.
 	 *
 	 * @param pieces used to construct the new cube.
-	 * @throws IllegalArgumentException if the given pieces are invalid.
+	 * @throws InvalidRubiksCubeState if the given pieces are invalid.
 	 */
 	protected RubiksCube(Piece[] pieces) {
 		if (pieces.length != 26) {
-			throw new IllegalArgumentException("Cube must contain 26 pieces. Given pieces = " + pieces.length);
+			throw new InvalidRubiksCubeState("Cube must contain 26 pieces. Given pieces = " + pieces.length);
 		}
 
 		int next = 0;
@@ -146,23 +155,28 @@ public class RubiksCube {
 					Piece p = pieces[next];
 
 					if (p == null) {
-						throw new IllegalArgumentException("Given pieces must not be null.");
+						throw new InvalidRubiksCubeState("Given pieces must not be null.");
 					}
 
+					// If we already found a piece with the same ID, fail. Otherwise mark this ID as
+					// found.
 					if (duplicateCheck[p.getID() - 1])
-						throw new IllegalArgumentException("Duplicate piece found with ID = " + p.getID());
-					duplicateCheck[p.getID() - 1] = true;
+						throw new InvalidRubiksCubeState("Duplicate piece found with ID = " + p.getID());
+					else
+						duplicateCheck[p.getID() - 1] = true;
 
+					// Validate we have the valid colors based on position (for example, middle row
+					// pieces can't have Z color).
 					if ((x - 1 == 0 && p.getXColor() != Color.NONE) || (x - 1 != 0 && p.getXColor() == Color.NONE)) {
-						throw new IllegalArgumentException(String.format("Illegal 'X' color %s at (%d, %d, %d)",
+						throw new InvalidRubiksCubeState(String.format("Illegal 'X' color %s at (%d, %d, %d)",
 								p.getXColor(), x - 1, y - 1, z - 1));
 					}
 					if ((y - 1 == 0 && p.getYColor() != Color.NONE) || (y - 1 != 0 && p.getYColor() == Color.NONE)) {
-						throw new IllegalArgumentException(String.format("Illegal 'Y' color %s at (%d, %d, %d)",
+						throw new InvalidRubiksCubeState(String.format("Illegal 'Y' color %s at (%d, %d, %d)",
 								p.getYColor(), x - 1, y - 1, z - 1));
 					}
 					if ((z - 1 == 0 && p.getZColor() != Color.NONE) || (z - 1 != 0 && p.getZColor() == Color.NONE)) {
-						throw new IllegalArgumentException(String.format("Illegal 'Z' color %s at (%d, %d, %d)",
+						throw new InvalidRubiksCubeState(String.format("Illegal 'Z' color %s at (%d, %d, %d)",
 								p.getZColor(), x - 1, y - 1, z - 1));
 					}
 

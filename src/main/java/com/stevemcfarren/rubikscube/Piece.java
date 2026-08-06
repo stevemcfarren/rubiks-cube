@@ -128,7 +128,7 @@ public class Piece {
 	public void rotate(Axis axis, int angle) {
 		// Validate angle (allow -180 to simplify 'undoing' a move).
 		if (angle < -90 || angle > 270 || (angle % 90) != 0) {
-			throw new IllegalArgumentException("'Angle' multiple of 90 between -270 and 270: " + angle);
+			throw new IllegalArgumentException("'Angle' must be a multiple of 90 between -270 and 270: " + angle);
 		}
 
 		// Nothing to do if rotating a multiple of 180.

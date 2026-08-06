@@ -49,15 +49,15 @@ class RubiksCubeTest {
 
 		try {
 			cube = new RubiksCube(new Piece[1]);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Cube must contain 26 pieces. Given pieces = 1", e.getMessage());
 		}
 
 		try {
 			cube = new RubiksCube(new Piece[26]);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Given pieces must not be null.", e.getMessage());
 		}
 
@@ -69,30 +69,30 @@ class RubiksCubeTest {
 		try {
 			pieces[0] = new Piece(Color.NONE, Color.YELLOW, Color.GREEN);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'X' color NONE at (-1, -1, -1)", e.getMessage());
 		}
 		try {
 			pieces[0] = new Piece(Color.RED, Color.NONE, Color.GREEN);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'Y' color NONE at (-1, -1, -1)", e.getMessage());
 		}
 		try {
 			pieces[0] = new Piece(Color.RED, Color.YELLOW, Color.NONE);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'Z' color NONE at (-1, -1, -1)", e.getMessage());
 		}
 
 		try {
 			pieces[0] = new Piece(Color.RED, Color.YELLOW, Color.BLUE);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Duplicate piece found with ID = 38", e.getMessage());
 		}
 
@@ -101,22 +101,22 @@ class RubiksCubeTest {
 		try {
 			pieces[11] = new Piece(Color.ORANGE, Color.YELLOW, Color.BLUE);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'X' color ORANGE at (0, -1, 1)", e.getMessage());
 		}
 		try {
 			pieces[3] = new Piece(Color.RED, Color.BLUE, Color.GREEN);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'Y' color BLUE at (-1, 0, -1)", e.getMessage());
 		}
 		try {
 			pieces[1] = new Piece(Color.RED, Color.YELLOW, Color.BLUE);
 			cube = new RubiksCube(pieces);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
 			assertEquals("Illegal 'Z' color BLUE at (-1, -1, 0)", e.getMessage());
 		}
 
@@ -589,6 +589,13 @@ class RubiksCubeTest {
 		String id1 = cube1.getStateIdentifier();
 		RubiksCube cube2 = new RubiksCube(id1);
 		assertEquals(id1, cube2.getStateIdentifier());
+
+		try {
+			cube1 = new RubiksCube("12345");
+			fail("Expected InvalidRubiksCubeState");
+		} catch (InvalidRubiksCubeState e) {
+			assertEquals("Invalid state identifier: 12345", e.getMessage());
+		}
 
 	}
 }
