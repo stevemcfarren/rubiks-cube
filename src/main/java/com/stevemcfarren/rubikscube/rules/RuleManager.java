@@ -193,8 +193,6 @@ public class RuleManager {
 		if (moves.length == 0)
 			throw new IllegalArgumentException("Rule must have at least one move.");
 
-		// TODO: validate initial state
-
 		Rule existing = findRule(ruleList, initialState);
 		if (existing != null) {
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.stevemcfarren.rubikscube.Color;
 import com.stevemcfarren.rubikscube.Move;
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.Piece;
 import com.stevemcfarren.rubikscube.Point3D;
 import com.stevemcfarren.rubikscube.RubiksCube;
@@ -72,20 +73,20 @@ public class RubiksCubeSolver {
 		steps.add(new Step(type, new ArrayList<Move>()));
 	}
 	
-	private void rotateCube(Face face, int angle) {
+	private void rotateCube(Face face, Direction direction) {
 		if (!steps.isEmpty()) {
 			List<Move> moves = steps.getLast().moves();
-			moves.add(new Move(Move.Type.CUBE, face, angle));
+			moves.add(new Move(Move.Type.CUBE, face, direction));
 		}
-		cube.rotateCube(face, angle);
+		cube.rotateCube(face, direction);
 	}
 
-	private void rotateFace(Face face, int angle) {
+	private void rotateFace(Face face, Direction direction) {
 		if (!steps.isEmpty()) {
 			List<Move> moves = steps.getLast().moves();
-			moves.add(new Move(Move.Type.FACE, face, angle));
+			moves.add(new Move(Move.Type.FACE, face, direction));
 		}
-		cube.rotateFace(face, angle);
+		cube.rotateFace(face, direction);
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class RubiksCubeSolver {
 
 		for (int i = 0; i < 4; i++) {
 			beginStep(StepType.TOP_EDGE);
-			rotateCube(Face.TOP, 90);
+			rotateCube(Face.TOP, Direction.CLOCKWISE);
 			if (this.solveTopFrontEdge()) {
 				piecesSolved++;
 			}
@@ -145,7 +146,7 @@ public class RubiksCubeSolver {
 
 		for (int i = 0; i < 4; i++) {
 			beginStep(StepType.TOP_CORNER);
-			rotateCube(Face.TOP, 90);
+			rotateCube(Face.TOP, Direction.CLOCKWISE);
 			if (this.solveTopFrontRightCorner()) {
 				piecesSolved++;
 			}
@@ -163,7 +164,7 @@ public class RubiksCubeSolver {
 
 		for (int i = 0; i < 4; i++) {
 			beginStep(StepType.MIDDLE_EDGE);
-			rotateCube(Face.TOP, 90);
+			rotateCube(Face.TOP, Direction.CLOCKWISE);
 			if (this.solveMiddleEdge()) {
 				piecesSolved++;
 			}
@@ -189,7 +190,7 @@ public class RubiksCubeSolver {
 				+ cube.getColorByFace(Face.BACK).bitmask;
 		Piece backRightPiece = cube.getPieceByLocation(backRight);
 		while (backRightPiece.getID() != backRightSolvedID) {
-			rotateFace(Face.BOTTOM, 90);
+			rotateFace(Face.BOTTOM, Direction.CLOCKWISE);
 			backRightPiece = cube.getPieceByLocation(backRight);
 		}
 
@@ -205,7 +206,7 @@ public class RubiksCubeSolver {
 			if (rule != null) {
 				// apply rule
 				for (Move m : rule.getMoves()) {
-					rotateFace(m.getFace(), m.getAngle());
+					rotateFace(m.getFace(), m.getDirection());
 				}
 			} else {
 				// Didn't find rule to put corners in place.
@@ -228,7 +229,7 @@ public class RubiksCubeSolver {
 			if (rule != null) {
 				// apply rule
 				for (Move m : rule.getMoves()) {
-					rotateFace(m.getFace(), m.getAngle());
+					rotateFace(m.getFace(), m.getDirection());
 				}
 			} else {
 				// Didn't find rule to put corners in place.
@@ -261,7 +262,7 @@ public class RubiksCubeSolver {
 			if (rule != null) {
 				// apply rule
 				for (Move m : rule.getMoves()) {
-					rotateFace(m.getFace(), m.getAngle());
+					rotateFace(m.getFace(), m.getDirection());
 				}
 			} else {
 				// Didn't find rule to solve bottom edges.
@@ -294,7 +295,7 @@ public class RubiksCubeSolver {
 		if (rule != null) {
 			// apply rule and return
 			for (Move m : rule.getMoves()) {
-				rotateFace(m.getFace(), m.getAngle());
+				rotateFace(m.getFace(), m.getDirection());
 			}
 			return true;
 		}
@@ -331,7 +332,7 @@ public class RubiksCubeSolver {
 		if (rule != null) {
 			// apply rule and return
 			for (Move m : rule.getMoves()) {
-				rotateFace(m.getFace(), m.getAngle());
+				rotateFace(m.getFace(), m.getDirection());
 			}
 			return true;
 		}
@@ -358,7 +359,7 @@ public class RubiksCubeSolver {
 		if (rule != null) {
 			// apply rule and return
 			for (Move m : rule.getMoves()) {
-				rotateFace(m.getFace(), m.getAngle());
+				rotateFace(m.getFace(), m.getDirection());
 			}
 
 			return true;

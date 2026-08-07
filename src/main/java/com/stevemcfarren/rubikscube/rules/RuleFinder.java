@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stevemcfarren.rubikscube.Move;
+import com.stevemcfarren.rubikscube.RubiksCubeManager;
 
 /**
  * Record structure for the RuleFinder configuration data.
@@ -76,7 +77,7 @@ public class RuleFinder {
 			int tempSeq = curSeq;
 			for (int i = config.initialSequence() - 2; i >= 0; i--) {
 				int divisor = Math.powExact(12, i);
-				Move nextMove = RuleHelper.ALLMOVES[tempSeq / divisor];
+				Move nextMove = RubiksCubeManager.ALLMOVES[tempSeq / divisor];
 				if (RuleHelper.isMoveWasted(moves, nextMove)) {
 					wastedMove = true;
 					break;
@@ -92,7 +93,7 @@ public class RuleFinder {
 			CountDownLatch latch = new CountDownLatch(12);
 
 			for (int m = 0; m < 12; m++) {
-				Move nextMove = RuleHelper.ALLMOVES[m];
+				Move nextMove = RubiksCubeManager.ALLMOVES[m];
 				if (RuleHelper.isMoveWasted(moves, nextMove)) {
 					latch.countDown();
 					continue;

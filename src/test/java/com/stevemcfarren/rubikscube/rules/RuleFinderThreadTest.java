@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stevemcfarren.rubikscube.Move;
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.RubiksCube.Face;
 
 class RuleFinderThreadTest {
@@ -84,9 +85,9 @@ class RuleFinderThreadTest {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		List<Move> moves = new ArrayList<Move>();
-		moves.add(new Move(Face.BOTTOM, -90));
-		moves.add(new Move(Face.BOTTOM, -90));
-		moves.add(new Move(Face.FRONT, 90));
+		moves.add(new Move(Face.BOTTOM, Direction.COUNTERCLOCKWISE));
+		moves.add(new Move(Face.BOTTOM, Direction.COUNTERCLOCKWISE));
+		moves.add(new Move(Face.FRONT, Direction.CLOCKWISE));
 		
 		RuleFinderThread finder = new RuleFinderThread(moves, 1, 10, latch);
 		Thread t1 = new Thread(finder);

@@ -22,16 +22,6 @@ public class Rule {
 	}
 
 	/**
-	 * Gets the rotations for each corner performed by the rule.
-	 *
-	 * @return the array of piece states defining when this rule should be applied
-	 */
-	public int[] getRotations() {
-		// TODO
-		return null;
-	}
-
-	/**
 	 * Gets the sequence of moves that solve this corner swap configuration.
 	 *
 	 * @return the list of moves to apply
