@@ -188,29 +188,6 @@ public class RubiksCube {
 		}
 	}
 
-	/**
-	 * Creates a copy of all 26 pieces in the cube. TODO: Consider removing this
-	 * function; not sure it has value beyond testing and exposes internal
-	 * implementation details.
-	 *
-	 * @return an array of 26 Piece objects
-	 */
-	public Piece[] copyPieces() {
-		Piece[] copyPieces = new Piece[26];
-		int count = 0;
-		for (int x = 0; x <= 2; x++) {
-			for (int y = 0; y <= 2; y++) {
-				for (int z = 0; z <= 2; z++) {
-					if (!(x == 1 && y == 1 && z == 1)) {
-						copyPieces[count] = new Piece(this.pieceMatrix[x][y][z]);
-						count++;
-					}
-				}
-			}
-		}
-		return copyPieces;
-	}
-
 	private Piece swapPiece(Point3D loc, Piece newPiece) {
 		Piece temp = this.getPieceByLocation(loc);
 		pieceMatrix[loc.x + 1][loc.y + 1][loc.z + 1] = newPiece;

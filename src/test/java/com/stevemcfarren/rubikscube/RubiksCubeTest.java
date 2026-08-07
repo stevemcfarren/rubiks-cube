@@ -62,10 +62,9 @@ class RubiksCubeTest {
 			assertEquals("Given pieces must not be null.", e.getMessage());
 		}
 
-		cube = RubiksCubeManager.getSolvedCube();
+		Piece pieces[] = TestHelper.getSolvedPieces();
+		cube = new RubiksCube(pieces);
 		assertTrue(cube.isCubeSolved(), "Initial state should be solved.");
-
-		Piece pieces[] = cube.copyPieces();
 
 		try {
 			pieces[0] = new Piece(Color.NONE, Color.YELLOW, Color.GREEN);

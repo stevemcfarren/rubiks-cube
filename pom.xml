@@ -6,7 +6,7 @@
 	<groupId>com.stevemcfarren</groupId>
 	<artifactId>rubiks-cube</artifactId>
 	<name>rubiks-cube</name>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<description>Rubiks Cube Solver</description>
 	<organization>
 		<name>Steve McFarren</name>
