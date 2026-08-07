@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.RubiksCube.DisplayData;
 import com.stevemcfarren.rubikscube.RubiksCube.Face;
 
@@ -128,7 +129,7 @@ class RubiksCubeTest {
 		RubiksCube cube2 = new RubiksCube(cube1);
 		assertTrue(cube1.isCubeSolved(), "Cube1 should initially be solved.");
 		assertTrue(cube2.isCubeSolved(), "Cube2 should initially be solved.");
-		cube1.rotateFace(Face.FRONT, 90);
+		cube1.rotateFace(Face.FRONT, Direction.CLOCKWISE);
 		assertFalse(cube1.isCubeSolved(), "Cube1 should no longer be solved.");
 		assertTrue(cube2.isCubeSolved(), "Cube2 should still be solved.");
 	}
@@ -138,48 +139,20 @@ class RubiksCubeTest {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 		assertTrue(cube.isCubeSolved(), "Initial state should be solved.");
 
-		cube.rotateFace(Face.FRONT, 0);
-		assertTrue(cube.isCubeSolved(), "Cube should be solved after rotation of zero.");
-
-		try {
-			cube.rotateFace(Face.FRONT, -360);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: -360", e.getMessage());
-		}
-		try {
-			cube.rotateFace(Face.FRONT, 360);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: 360", e.getMessage());
-		}
-		try {
-			cube.rotateFace(Face.FRONT, 45);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: 45", e.getMessage());
-		}
 
 		for (Face f : Face.values()) {
-			cube.rotateFace(f, 90);
+			cube.rotateFace(f, Direction.CLOCKWISE);
 			assertTrue(!cube.isCubeSolved(), "Cube should no longer be solved.");
-			cube.rotateFace(f, 270);
+			cube.rotateFace(f, Direction.COUNTERCLOCKWISE);
 			assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating face clockwise and back:" + f);
 		}
 
 		for (Face f : Face.values()) {
-			cube.rotateFace(f, 180);
+			cube.rotateFace(f, Direction.CLOCKWISE);
+			cube.rotateFace(f, Direction.CLOCKWISE);
+			cube.rotateFace(f, Direction.CLOCKWISE);
 			assertTrue(!cube.isCubeSolved(), "Cube should no longer be solved.");
-			cube.rotateFace(f, 180);
-			assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating face clockwise and back:" + f);
-		}
-
-		for (Face f : Face.values()) {
-			cube.rotateFace(f, 90);
-			cube.rotateFace(f, 90);
-			cube.rotateFace(f, 90);
-			assertTrue(!cube.isCubeSolved(), "Cube should no longer be solved.");
-			cube.rotateFace(f, 90);
+			cube.rotateFace(f, Direction.CLOCKWISE);
 			assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating face 360 degrees: " + f);
 		}
 	}
@@ -188,62 +161,41 @@ class RubiksCubeTest {
 	final void testRubiksCube_RotateCube90() {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 
-		cube.rotateCube(Face.FRONT, 0);
-		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		try {
-			cube.rotateCube(Face.FRONT, -360);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: -360", e.getMessage());
-		}
-		try {
-			cube.rotateCube(Face.FRONT, 360);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: 360", e.getMessage());
-		}
-		try {
-			cube.rotateCube(Face.FRONT, 45);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Angle must be a multiple of 90 between -90 and 270: 45", e.getMessage());
-		}
-
-		cube.rotateCube(Face.TOP, 90);
+		cube.rotateCube(Face.TOP, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.RIGHT), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.TOP, 270);
+		cube.rotateCube(Face.TOP, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.BOTTOM, 90);
+		cube.rotateCube(Face.BOTTOM, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.LEFT), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.BOTTOM, -90);
+		cube.rotateCube(Face.BOTTOM, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.RIGHT, 90);
+		cube.rotateCube(Face.RIGHT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BOTTOM), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.RIGHT, -90);
+		cube.rotateCube(Face.RIGHT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.LEFT, 90);
+		cube.rotateCube(Face.LEFT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.TOP), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.LEFT, -90);
+		cube.rotateCube(Face.LEFT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.FRONT, 90);
+		cube.rotateCube(Face.FRONT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.LEFT), cube.getColorByFace(Face.TOP));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.FRONT, -90);
+		cube.rotateCube(Face.FRONT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.TOP), cube.getColorByFace(Face.TOP));
 
-		cube.rotateCube(Face.BACK, 90);
+		cube.rotateCube(Face.BACK, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.RIGHT), cube.getColorByFace(Face.TOP));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.BACK, -90);
+		cube.rotateCube(Face.BACK, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.TOP), cube.getColorByFace(Face.TOP));
 
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
@@ -253,40 +205,52 @@ class RubiksCubeTest {
 	final void testRubiksCube_RotateCube180() {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 
-		cube.rotateCube(Face.TOP, 180);
+		cube.rotateCube(Face.TOP, Direction.CLOCKWISE);
+		cube.rotateCube(Face.TOP, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BACK), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.TOP, 180);
+		cube.rotateCube(Face.TOP, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.TOP, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.BOTTOM, 180);
+		cube.rotateCube(Face.BOTTOM, Direction.CLOCKWISE);
+		cube.rotateCube(Face.BOTTOM, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BACK), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.BOTTOM, 180);
+		cube.rotateCube(Face.BOTTOM, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.BOTTOM, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.RIGHT, 180);
+		cube.rotateCube(Face.RIGHT, Direction.CLOCKWISE);
+		cube.rotateCube(Face.RIGHT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BACK), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.RIGHT, 180);
+		cube.rotateCube(Face.RIGHT, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.RIGHT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.LEFT, 180);
+		cube.rotateCube(Face.LEFT, Direction.CLOCKWISE);
+		cube.rotateCube(Face.LEFT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BACK), cube.getColorByFace(Face.FRONT));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.LEFT, 180);
+		cube.rotateCube(Face.LEFT, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.LEFT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.FRONT), cube.getColorByFace(Face.FRONT));
 
-		cube.rotateCube(Face.FRONT, 180);
+		cube.rotateCube(Face.FRONT, Direction.CLOCKWISE);
+		cube.rotateCube(Face.FRONT, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BOTTOM), cube.getColorByFace(Face.TOP));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.FRONT, 180);
+		cube.rotateCube(Face.FRONT, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.FRONT, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.TOP), cube.getColorByFace(Face.TOP));
 
-		cube.rotateCube(Face.BACK, 180);
+		cube.rotateCube(Face.BACK, Direction.CLOCKWISE);
+		cube.rotateCube(Face.BACK, Direction.CLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.BOTTOM), cube.getColorByFace(Face.TOP));
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
-		cube.rotateCube(Face.BACK, 180);
+		cube.rotateCube(Face.BACK, Direction.COUNTERCLOCKWISE);
+		cube.rotateCube(Face.BACK, Direction.COUNTERCLOCKWISE);
 		assertEquals(RubiksCubeManager.getNormalizedColor(Face.TOP), cube.getColorByFace(Face.TOP));
 
 		assertTrue(cube.isCubeSolved(), "Cube should still be solved after rotating whole cube");
@@ -393,20 +357,20 @@ class RubiksCubeTest {
 		assertTrue(cube.isPieceSolved(middleedge));
 		assertTrue(cube.isPieceSolved(bottomcorner));
 
-		cube.rotateFace(Face.RIGHT, 90);
+		cube.rotateFace(Face.RIGHT, Direction.CLOCKWISE);
 		assertFalse(cube.isPieceSolved(topcorner));
 		assertTrue(cube.isPieceSolved(topedge));
 		assertFalse(cube.isPieceSolved(middleedge));
 		assertTrue(cube.isPieceSolved(bottomcorner));
 
-		cube.rotateFace(Face.TOP, 90);
+		cube.rotateFace(Face.TOP, Direction.CLOCKWISE);
 		assertFalse(cube.isPieceSolved(topcorner));
 		assertFalse(cube.isPieceSolved(topedge));
 		assertFalse(cube.isPieceSolved(middleedge));
 		assertTrue(cube.isPieceSolved(bottomcorner));
 
-		cube.rotateFace(Face.TOP, -90);
-		cube.rotateFace(Face.RIGHT, -90);
+		cube.rotateFace(Face.TOP, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.RIGHT, Direction.COUNTERCLOCKWISE);
 		assertTrue(cube.isPieceSolved(topcorner));
 		assertTrue(cube.isPieceSolved(topedge));
 		assertTrue(cube.isPieceSolved(middleedge));
@@ -418,46 +382,46 @@ class RubiksCubeTest {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 		testResults.add(new TestResult("Solved cube", cube.getDisplayData()));
 
-		cube.rotateFace(Face.TOP, 90);
+		cube.rotateFace(Face.TOP, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate TOP clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.TOP, -90);
+		cube.rotateFace(Face.TOP, Direction.COUNTERCLOCKWISE);
 
-		cube.rotateFace(Face.BOTTOM, 90);
+		cube.rotateFace(Face.BOTTOM, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate BOTTOM clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.BOTTOM, -90);
+		cube.rotateFace(Face.BOTTOM, Direction.COUNTERCLOCKWISE);
 
-		cube.rotateFace(Face.LEFT, 90);
+		cube.rotateFace(Face.LEFT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate LEFT clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.LEFT, -90);
+		cube.rotateFace(Face.LEFT, Direction.COUNTERCLOCKWISE);
 
-		cube.rotateFace(Face.RIGHT, 90);
+		cube.rotateFace(Face.RIGHT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate RIGHT clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.RIGHT, -90);
+		cube.rotateFace(Face.RIGHT, Direction.COUNTERCLOCKWISE);
 
-		cube.rotateFace(Face.FRONT, 90);
+		cube.rotateFace(Face.FRONT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate FRONT clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.FRONT, -90);
-		cube.rotateFace(Face.BACK, 90);
+		cube.rotateFace(Face.FRONT, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.BACK, Direction.CLOCKWISE);
 
 		testResults.add(new TestResult("Rotate BACK clockwise", cube.getDisplayData()));
-		cube.rotateFace(Face.BACK, -90);
+		cube.rotateFace(Face.BACK, Direction.COUNTERCLOCKWISE);
 
-		cube.rotateCube(Face.TOP, 90);
+		cube.rotateCube(Face.TOP, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - TOP", cube.getDisplayData()));
 
-		cube.rotateCube(Face.BOTTOM, 90);
+		cube.rotateCube(Face.BOTTOM, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - BOTTOM", cube.getDisplayData()));
 
-		cube.rotateCube(Face.LEFT, 90);
+		cube.rotateCube(Face.LEFT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - LEFT", cube.getDisplayData()));
 
-		cube.rotateCube(Face.RIGHT, 90);
+		cube.rotateCube(Face.RIGHT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - RIGHT", cube.getDisplayData()));
 
-		cube.rotateCube(Face.FRONT, 90);
+		cube.rotateCube(Face.FRONT, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - FRONT", cube.getDisplayData()));
 
-		cube.rotateCube(Face.BACK, 90);
+		cube.rotateCube(Face.BACK, Direction.CLOCKWISE);
 		testResults.add(new TestResult("Rotate Cube - BACK", cube.getDisplayData()));
 	}
 
@@ -465,25 +429,21 @@ class RubiksCubeTest {
 	final void testRubiksCube_RandomMoves() {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 
-		final Move[] ALLMOVES = { new Move(Face.FRONT, 90), new Move(Face.FRONT, -90), new Move(Face.BACK, 90),
-				new Move(Face.BACK, -90), new Move(Face.LEFT, 90), new Move(Face.LEFT, -90), new Move(Face.RIGHT, 90),
-				new Move(Face.RIGHT, -90), new Move(Face.TOP, 90), new Move(Face.TOP, -90), new Move(Face.BOTTOM, 90),
-				new Move(Face.BOTTOM, -90) };
 		Move[] moves = new Move[20];
 		for (int i = 0; i < 20; i++) {
-			moves[i] = ALLMOVES[(int) (Math.random() * ALLMOVES.length)];
+			moves[i] = RubiksCubeManager.ALLMOVES[(int) (Math.random() * RubiksCubeManager.ALLMOVES.length)];
 		}
 
 		testResults.add(new TestResult("Solved cube", cube.getDisplayData()));
 
 		for (Move m : moves) {
-			cube.rotateFace(m.getFace(), m.getAngle());
+			cube.rotateFace(m.getFace(), m.getDirection());
 		}
 
 		testResults.add(new TestResult("After random moves", cube.getDisplayData()));
 
 		for (int i = moves.length - 1; i >= 0; i--) {
-			cube.rotateFace(moves[i].getFace(), (moves[i].getAngle() * -1));
+			cube.rotateFace(moves[i].getFace(), moves[i].getDirection()==Direction.CLOCKWISE ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE);
 		}
 		testResults.add(new TestResult("After reversing previous moves", cube.getDisplayData()));
 	}
@@ -573,10 +533,10 @@ class RubiksCubeTest {
 		RubiksCube cube = RubiksCubeManager.getRandomCube();
 		String initialID = cube.getStateIdentifier();
 
-		cube.rotateFace(Face.FRONT, 90);
+		cube.rotateFace(Face.FRONT, Direction.CLOCKWISE);
 		assertNotEquals(initialID, cube.getStateIdentifier());
 
-		cube.rotateFace(Face.FRONT, -90);
+		cube.rotateFace(Face.FRONT, Direction.COUNTERCLOCKWISE);
 		assertEquals(initialID, cube.getStateIdentifier());
 	}
 

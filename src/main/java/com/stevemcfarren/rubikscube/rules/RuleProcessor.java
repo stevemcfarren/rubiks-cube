@@ -89,12 +89,12 @@ public class RuleProcessor {
 
 				for (int i = r2.getMoves().length; i > 0; i--) {
 					Move m = r2.getMoves()[i - 1];
-					cube.rotateFace(m.getFace(), (-1 * m.getAngle()));
+					cube.rotateFace(m.getFace(), RuleHelper.reverseDirection(m.getDirection()));
 				}
 
 				for (int i = r1.getMoves().length; i > 0; i--) {
 					Move m = r1.getMoves()[i - 1];
-					cube.rotateFace(m.getFace(), (-1 * m.getAngle()));
+					cube.rotateFace(m.getFace(), RuleHelper.reverseDirection(m.getDirection()));
 				}
 
 				PieceState[] currentState = new PieceState[4];
@@ -147,12 +147,12 @@ public class RuleProcessor {
 
 				for (int i = r2.getMoves().length; i > 0; i--) {
 					Move m = r2.getMoves()[i - 1];
-					cube.rotateFace(m.getFace(), (-1 * m.getAngle()));
+					cube.rotateFace(m.getFace(), RuleHelper.reverseDirection(m.getDirection()));
 				}
 
 				for (int i = r1.getMoves().length; i > 0; i--) {
 					Move m = r1.getMoves()[i - 1];
-					cube.rotateFace(m.getFace(), (-1 * m.getAngle()));
+					cube.rotateFace(m.getFace(), RuleHelper.reverseDirection(m.getDirection()));
 				}
 
 				PieceState[] currentState = new PieceState[4];

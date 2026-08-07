@@ -3,6 +3,7 @@ package com.stevemcfarren.rubikscube.rules;
 import java.util.List;
 
 import com.stevemcfarren.rubikscube.Move;
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.Piece;
 import com.stevemcfarren.rubikscube.Point3D;
 import com.stevemcfarren.rubikscube.RubiksCube;
@@ -12,14 +13,6 @@ public class RuleHelper {
 
 	private RuleHelper() {
 	}
-	
-	/** All possible face moves */
-	public static final Move[] ALLMOVES = { new Move(Face.FRONT, 90), new Move(Face.FRONT, -90),
-			new Move(Face.BACK, 90), new Move(Face.BACK, -90), new Move(Face.LEFT, 90),
-			new Move(Face.LEFT, -90), new Move(Face.RIGHT, 90), new Move(Face.RIGHT, -90),
-			new Move(Face.TOP, 90), new Move(Face.TOP, -90), new Move(Face.BOTTOM, 90),
-			new Move(Face.BOTTOM, -90) };
-
 	
 	public static boolean isFaceAdjacent(Face f1, Face f2) {
 		if (f1 == f2)
@@ -47,7 +40,7 @@ public class RuleHelper {
 		Move[] results = new Move[moves.size()];
 		int index = moves.size()-1;
 		for (Move m : moves) {
-			results[index--] = new Move(m.getFace(), (-1 * m.getAngle()));
+			results[index--] = new Move(m.getFace(), m.getDirection()==Direction.CLOCKWISE ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE);
 		}
 
 		return results;
@@ -100,7 +93,7 @@ public class RuleHelper {
 			}
 
 			if (nextMove.getFace() == prevMove.getFace()) {
-				if (nextMove.getAngle() + prevMove.getAngle() == 0) {
+				if (nextMove.getDirection() != prevMove.getDirection()) {
 					// This move is undoing the previous move.
 					return true;
 				}
@@ -117,5 +110,12 @@ public class RuleHelper {
 		}
 
 		return false;
+	}
+	
+	public static Direction reverseDirection(Direction direction) {
+		if (direction == Direction.CLOCKWISE)
+			return Direction.COUNTERCLOCKWISE;
+		
+		return Direction.CLOCKWISE;
 	}
 }

@@ -105,21 +105,21 @@ class PieceTest {
 			p.rotate(Axis.X, 45);
 		    fail( "Expected IllegalArgumentException" );
 		} catch (IllegalArgumentException e) {
-			assertEquals("'Angle' multiple of 90 between -270 and 270: 45", e.getMessage());
+			assertEquals("'Angle' must be a multiple of 90 between -270 and 270: 45", e.getMessage());
 		}
 		try {
 			// Invalid center point.
 			p.rotate(Axis.X, -360);
 		    fail( "Expected IllegalArgumentException" );
 		} catch (IllegalArgumentException e) {
-			assertEquals("'Angle' multiple of 90 between -270 and 270: -360", e.getMessage());
+			assertEquals("'Angle' must be a multiple of 90 between -270 and 270: -360", e.getMessage());
 		}
 		try {
 			// Invalid center point.
 			p.rotate(Axis.X, 360);
 		    fail( "Expected IllegalArgumentException" );
 		} catch (IllegalArgumentException e) {
-			assertEquals("'Angle' multiple of 90 between -270 and 270: 360", e.getMessage());
+			assertEquals("'Angle' must be a multiple of 90 between -270 and 270: 360", e.getMessage());
 		}
 	}
 	

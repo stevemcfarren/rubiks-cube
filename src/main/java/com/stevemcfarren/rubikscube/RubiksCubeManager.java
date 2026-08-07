@@ -1,5 +1,6 @@
 package com.stevemcfarren.rubikscube;
 
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.RubiksCube.Face;
 
 /**
@@ -10,6 +11,14 @@ import com.stevemcfarren.rubikscube.RubiksCube.Face;
  */
 public class RubiksCubeManager {
 
+	public static final Move[] ALLMOVES = { new Move(Face.FRONT, Direction.CLOCKWISE),
+			new Move(Face.FRONT, Direction.COUNTERCLOCKWISE), new Move(Face.BACK, Direction.CLOCKWISE),
+			new Move(Face.BACK, Direction.COUNTERCLOCKWISE), new Move(Face.LEFT, Direction.CLOCKWISE),
+			new Move(Face.LEFT, Direction.COUNTERCLOCKWISE), new Move(Face.RIGHT, Direction.CLOCKWISE),
+			new Move(Face.RIGHT, Direction.COUNTERCLOCKWISE), new Move(Face.TOP, Direction.CLOCKWISE),
+			new Move(Face.TOP, Direction.COUNTERCLOCKWISE), new Move(Face.BOTTOM, Direction.CLOCKWISE),
+			new Move(Face.BOTTOM, Direction.COUNTERCLOCKWISE) };
+
 	/**
 	 * Constructs a Rubik's Cube in a randomized but solvable state. The cube is
 	 * created by starting with a solved cube and applying random moves.
@@ -19,14 +28,9 @@ public class RubiksCubeManager {
 	public static RubiksCube getRandomCube() {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 
-		final Move[] ALLMOVES = { new Move(Face.FRONT, 90), new Move(Face.FRONT, -90), new Move(Face.BACK, 90),
-				new Move(Face.BACK, -90), new Move(Face.LEFT, 90), new Move(Face.LEFT, -90), new Move(Face.RIGHT, 90),
-				new Move(Face.RIGHT, -90), new Move(Face.TOP, 90), new Move(Face.TOP, -90), new Move(Face.BOTTOM, 90),
-				new Move(Face.BOTTOM, -90) };
-
 		for (int i = 0; i < 30; i++) {
 			int index = (int) (Math.random() * ALLMOVES.length);
-			cube.rotateFace(ALLMOVES[index].getFace(), ALLMOVES[index].getAngle());
+			cube.rotateFace(ALLMOVES[index].getFace(), ALLMOVES[index].getDirection());
 		}
 
 		return cube;

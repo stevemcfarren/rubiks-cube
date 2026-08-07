@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import com.google.gson.Gson;
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.Point3D;
 import com.stevemcfarren.rubikscube.RubiksCube;
 import com.stevemcfarren.rubikscube.RubiksCube.Face;
@@ -49,16 +50,16 @@ class RubiksCubeSolverTest {
 		RubiksCube cube = RubiksCubeManager.getSolvedCube();
 		RubiksCubeSolver solver = new RubiksCubeSolver(cube);
 	
-		cube.rotateFace(Face.FRONT, 90);
-		cube.rotateFace(Face.RIGHT, -90);
-		cube.rotateFace(Face.BACK, 90);
-		cube.rotateFace(Face.LEFT, -90);
-		cube.rotateFace(Face.TOP, 90);
-		cube.rotateFace(Face.BOTTOM, -90);
-		cube.rotateFace(Face.FRONT, 90);
-		cube.rotateFace(Face.RIGHT, -90);
-		cube.rotateFace(Face.BACK, 90);
-		cube.rotateFace(Face.LEFT, -90);
+		cube.rotateFace(Face.FRONT, Direction.CLOCKWISE);
+		cube.rotateFace(Face.RIGHT, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.BACK, Direction.CLOCKWISE);
+		cube.rotateFace(Face.LEFT, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.TOP, Direction.CLOCKWISE);
+		cube.rotateFace(Face.BOTTOM, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.FRONT, Direction.CLOCKWISE);
+		cube.rotateFace(Face.RIGHT, Direction.COUNTERCLOCKWISE);
+		cube.rotateFace(Face.BACK, Direction.CLOCKWISE);
+		cube.rotateFace(Face.LEFT, Direction.COUNTERCLOCKWISE);
 	
 		testResults.add(new TestResult("Solve Predefined Cube - Initial State", cube.getDisplayData()));
 

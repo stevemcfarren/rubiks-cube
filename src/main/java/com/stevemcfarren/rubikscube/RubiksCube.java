@@ -1,5 +1,6 @@
 package com.stevemcfarren.rubikscube;
 
+import com.stevemcfarren.rubikscube.Move.Direction;
 import com.stevemcfarren.rubikscube.Point3D.Axis;
 
 /**
@@ -236,20 +237,11 @@ public class RubiksCube {
 	/**
 	 * Rotate the specified face of the cube.
 	 * 
-	 * @param face  the face to be rotated
-	 * @param angle angle the angle and direction of rotation. Must be a multiple of
-	 *              90 between -90 and 270 (negative is counter-clockwise).
+	 * @param face      the face to be rotated
+	 * @param direction to Rotate
 	 */
-	public void rotateFace(Face face, int angle) {
-		if (angle == 0) {
-			return;
-		}
-		if (angle < -90 || angle > 270 || (angle % 90) != 0) {
-			throw new IllegalArgumentException("Angle must be a multiple of 90 between -90 and 270: " + angle);
-		}
-		if (angle == 270) {
-			angle = -90;
-		}
+	public void rotateFace(Face face, Direction direction) {
+		int angle = direction == Direction.CLOCKWISE ? 90 : -90;
 
 		Axis axis = null;
 		int axisValue = -1;
@@ -293,20 +285,11 @@ public class RubiksCube {
 	 * Rotate the entire cube in the given direction from user's perspective
 	 * (looking at specified face).
 	 * 
-	 * @param face
-	 * @param angle angle the angle and direction of rotation. Must be a multiple of
-	 *              90 between -90 and 270 (negative is counter-clockwise).
+	 * @param face      perspective from which to rotate the cube
+	 * @param direction to Rotate the cube
 	 */
-	public void rotateCube(Face face, int angle) {
-		if (angle == 0) {
-			return;
-		}
-		if (angle < -90 || angle > 270 || (angle % 90) != 0) {
-			throw new IllegalArgumentException("Angle must be a multiple of 90 between -90 and 270: " + angle);
-		}
-		if (angle == 270) {
-			angle = -90;
-		}
+	public void rotateCube(Face face, Direction direction) {
+		int angle = direction == Direction.CLOCKWISE ? 90 : -90;
 
 		Axis axis = null;
 

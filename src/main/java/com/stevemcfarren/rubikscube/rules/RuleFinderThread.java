@@ -65,7 +65,7 @@ public class RuleFinderThread implements Runnable {
 		if (initialMoves != null) {
 			for (Move m : initialMoves) {
 				moves.add(m);
-				cube.rotateFace(m.getFace(), m.getAngle());
+				cube.rotateFace(m.getFace(), m.getDirection());
 			}
 		}
 	}
@@ -74,12 +74,6 @@ public class RuleFinderThread implements Runnable {
 		Piece p = cube.getPieceByLocation(location);
 		return new PieceState(p, location);
 	}
-
-	// TODO
-	//private PieceState getPieceIDState(Point3D location) {
-	//	Piece p = cube.getPieceByLocation(location);
-	//	return new PieceState(p.getID(), location);
-	//}
 
 	/**
 	 * Gets whether a solving rule was found.
@@ -237,18 +231,18 @@ public class RuleFinderThread implements Runnable {
 			return;
 		}
 
-		for (Move m : RuleHelper.ALLMOVES) {
+		for (Move m : RubiksCubeManager.ALLMOVES) {
 			if (RuleHelper.isMoveWasted(moves, m)) {
 				continue;
 			}
 
 			moves.add(m);
-			cube.rotateFace(m.getFace(), m.getAngle());
+			cube.rotateFace(m.getFace(), m.getDirection());
 
 			testAllSequences(sequenceLength);
 
 			moves.remove(moves.size() - 1);
-			cube.rotateFace(m.getFace(), (-1 * m.getAngle()));
+			cube.rotateFace(m.getFace(), RuleHelper.reverseDirection(m.getDirection()));
 		}
 	}
 

@@ -13,29 +13,21 @@ import com.stevemcfarren.rubikscube.RubiksCube.Face;
 public final class Move {
 
 	private Face face;
-	private int angle;
+	private Direction direction;
 	private Type type;
 	
 	public enum Type {
 		FACE, CUBE
 	};
 
+	public enum Direction {
+		CLOCKWISE, COUNTERCLOCKWISE
+	};
+
 
 	public Move() {
 		this.face = Face.TOP;
-		this.angle = 90;
-		this.type = Type.FACE;
-	}
-
-	/**
-	 * Constructs a new face rotation Move with the specified face and rotation angle.
-	 *
-	 * @param face the face to rotate
-	 * @param angle the rotation angle in degrees (positive is clockwise, negative is counter-clockwise)
-	 */
-	public Move(Face face, int angle) {
-		this.face = face;
-		this.angle = angle;
+		this.direction = Direction.CLOCKWISE;
 		this.type = Type.FACE;
 	}
 
@@ -46,10 +38,23 @@ public final class Move {
 	 * @param angle the rotation angle in degrees (positive is clockwise, negative is counter-clockwise)
 	 * @param type identifies the type of move (face rotation or whole cube rotation).
 	 */
-	public Move(Type type, Face face, int angle) {
+	public Move(Face face, Direction direction) {
+		this.type = Type.FACE;
+		this.face = face;
+		this.direction = direction;
+	}
+
+	/**
+	 * Constructs a new Move with the specified type, face and rotation angle.
+	 *
+	 * @param face the face to rotate
+	 * @param angle the rotation angle in degrees (positive is clockwise, negative is counter-clockwise)
+	 * @param type identifies the type of move (face rotation or whole cube rotation).
+	 */
+	public Move(Type type, Face face, Direction direction) {
 		this.type = type;
 		this.face = face;
-		this.angle = angle;
+		this.direction = direction;
 	}
 
 	/**
@@ -62,12 +67,12 @@ public final class Move {
 	}
 	
 	/**
-	 * Gets the rotation angle of this move.
+	 * Gets the direction of this move.
 	 *
-	 * @return the rotation angle in degrees
+	 * @return the direction
 	 */
-	public int getAngle() {
-		return angle;
+	public Direction getDirection() {
+		return direction;
 	}
 
 	/**
@@ -81,7 +86,7 @@ public final class Move {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(face, angle);
+		return Objects.hash(type, face, direction);
 	}
 
 	@Override
@@ -93,11 +98,11 @@ public final class Move {
 		if (getClass() != obj.getClass())
 			return false;
 		Move other = (Move) obj;
-		return face == other.face && angle == other.angle && type == other.type;
+		return face == other.face && direction == other.direction && type == other.type;
 	}
 
 	@Override
 	public String toString() {
-		return type + ": " + face + ", " + angle;
+		return type + ": " + face + ", " + direction;
 	}
 }
